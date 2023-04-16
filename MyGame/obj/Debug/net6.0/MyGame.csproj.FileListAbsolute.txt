@@ -23,3 +23,4 @@ C:\Users\HP\Desktop\Gamer\MyGame\obj\Debug\net6.0\refint\MyGame.dll
 C:\Users\HP\Desktop\Gamer\MyGame\obj\Debug\net6.0\MyGame.pdb
 C:\Users\HP\Desktop\Gamer\MyGame\obj\Debug\net6.0\MyGame.genruntimeconfig.cache
 C:\Users\HP\Desktop\Gamer\MyGame\obj\Debug\net6.0\ref\MyGame.dll
+C:\Users\HP\Desktop\Gamer\MyGame\bin\Debug\net6.0\Content\ball.xnb
