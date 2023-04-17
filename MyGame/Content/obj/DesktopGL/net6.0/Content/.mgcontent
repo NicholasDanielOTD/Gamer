@@ -5,8 +5,10 @@
   <Config />
   <SourceFiles>
     <File>C:/Users/HP/Desktop/Gamer/MyGame/Content/ball.png</File>
+    <File>C:/Users/HP/Desktop/Gamer/MyGame/Content/mytile.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

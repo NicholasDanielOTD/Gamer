@@ -11,6 +11,8 @@ public class Game1 : Game
 
     Entity ball;
 
+    World myWorld;
+
     bool ballSelected;
 
     public Game1()
@@ -22,11 +24,17 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+
+        
         // TODO: Add your initialization logic here
         ball = new Entity();
         ball.pos = new Vector2(_graphics.PreferredBackBufferWidth/2, _graphics.PreferredBackBufferHeight/2);
         ball.speed = 100f;
         ballSelected = false;
+
+        myWorld = new World();
+        myWorld.GenerateTileArray();
+
 
         base.Initialize();
     }
@@ -37,7 +45,12 @@ public class Game1 : Game
 
 
         ball.texture = Content.Load<Texture2D>("ball");
-        // TODO: use this.Content to load your game content here
+        Texture2D tileTexture = Content.Load<Texture2D>("mytile");
+        foreach(Tile tile in myWorld.TileArray)
+        {
+            tile.texture = tileTexture;
+        }
+        
     }
 
     protected override void Update(GameTime gameTime)
@@ -55,11 +68,16 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        Color backgroundColor = ballSelected ? Color.Red : Color.CornflowerBlue;
-
+        Color backgroundColor = Color.Beige;
         GraphicsDevice.Clear(backgroundColor);
 
+        // Draw a world of tiles
+
         _spriteBatch.Begin();
+        foreach(Tile tile in myWorld.TileArray)
+        {
+            _spriteBatch.Draw(tile.texture, tile.pos, Color.White);
+        }
         if(ballSelected) _spriteBatch.Draw(ball.texture, ball.pos, Color.Red);
         else _spriteBatch.Draw(ball.texture, ball.pos, Color.White);
         _spriteBatch.End();

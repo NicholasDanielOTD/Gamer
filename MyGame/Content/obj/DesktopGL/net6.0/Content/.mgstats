@@ -1,2 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/HP/Desktop/Gamer/MyGame/Content/ball.png","C:/Users/HP/Desktop/Gamer/MyGame/Content/bin/DesktopGL/Content/ball.xnb","TextureProcessor","Texture2DContent",8368,16469,0.1131764
+"C:/Users/HP/Desktop/Gamer/MyGame/Content/mytile.png","C:/Users/HP/Desktop/Gamer/MyGame/Content/bin/DesktopGL/Content/mytile.xnb","TextureProcessor","Texture2DContent",5066,16469,0.0890098
