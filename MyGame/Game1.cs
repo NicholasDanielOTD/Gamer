@@ -27,13 +27,13 @@ public class Game1 : Game
 
         
         // TODO: Add your initialization logic here
-        ball = new Entity();
-        ball.pos = new Vector2(_graphics.PreferredBackBufferWidth/2, _graphics.PreferredBackBufferHeight/2);
-        ball.speed = 100f;
-        ballSelected = false;
-
         myWorld = new World();
         myWorld.GenerateTileArray();
+
+        ball = new Entity();
+        ball.tile = myWorld.TileArray[0,0];
+        ball.speed = 100f;
+        ballSelected = false;
 
 
         base.Initialize();
@@ -60,8 +60,21 @@ public class Game1 : Game
         var kstate = Keyboard.GetState();
         var mstate = Mouse.GetState();
 
-        if (mstate.LeftButton == ButtonState.Pressed && LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ball)) ballSelected = true;
-        else if (mstate.LeftButton == ButtonState.Pressed) ballSelected = false;
+        if (mstate.LeftButton == ButtonState.Pressed)
+        {
+        if (LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ball)) ballSelected = true;
+        else ballSelected = false;
+        }
+
+        if (mstate.RightButton == ButtonState.Pressed)
+        {
+            if (ballSelected && (ball.tile != myWorld.GetTileAtPoint(mstate.Position)))
+            {
+                ball.destination = myWorld.GetTileAtPoint(mstate.Position);
+            }
+        }
+        
+        if(ball.destination != null) ball.Move(gameTime.ElapsedGameTime.TotalSeconds);
 
         base.Update(gameTime);
     }

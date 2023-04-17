@@ -7,6 +7,14 @@ namespace MyGame {
 
         public Tile[,] TileArray = new Tile[16, 16];
 
+        public Tile? GetTileAtPoint(Point point)
+        {
+            int x = point.X / 64;
+            int y = point.Y / 64;
+            if (x < 16 && y < 16) return TileArray[x,y];
+            return null;
+        }
+
         public void GenerateTileArray()
         {
             for(int x = 0; x < 16; x++)
