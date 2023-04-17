@@ -35,7 +35,6 @@ namespace MyGame {
         public Vector2 pos;
         public int width = 64;
         public int height = 64;
-
         public Texture2D texture;
 
         public bool ShouldDraw()

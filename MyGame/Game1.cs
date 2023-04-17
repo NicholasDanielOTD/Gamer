@@ -84,7 +84,7 @@ public class Game1 : Game
         if (mstate.RightButton == ButtonState.Pressed)
         {
 
-            if (selectedEntity != null && (selectedEntity.tile != myWorld.GetTileAtPoint(mstate.Position)))
+            if (selectedEntity != null && selectedEntity.destination == null && (selectedEntity.tile != myWorld.GetTileAtPoint(mstate.Position)))
             {
                 selectedEntity.destination = myWorld.GetTileAtPoint(mstate.Position);
             }
@@ -93,7 +93,7 @@ public class Game1 : Game
         foreach (Entity ent in entities)
         {
             if (ent == null) continue;
-            if (selectedEntity?.destination != null) selectedEntity.Move(gameTime.ElapsedGameTime.TotalSeconds);
+            if (ent.destination != null) ent.Move(gameTime.ElapsedGameTime.TotalSeconds);
         } 
 
         base.Update(gameTime);
@@ -118,9 +118,13 @@ public class Game1 : Game
         {
             if (ent == null) continue;
             if(ent == selectedEntity) {
-                _spriteBatch.Draw(ent.texture, color: Color.AntiqueWhite, position: ent.pos);
+                Texture2D highlight = new Texture2D(GraphicsDevice, 64, 64);
+                Color[] data = new Color[64*64];
+                for (int i=0; i < data.Length; i++) data[i] = Color.Crimson;
+                highlight.SetData(data);
+                _spriteBatch.Draw(highlight, new Vector2((int)ent.pos.X, (int)ent.pos.Y), Color.Red * .5f);
             }
-            else _spriteBatch.Draw(ent.texture, ent.pos, Color.White);
+            _spriteBatch.Draw(ent.texture, ent.pos, Color.White);
         }
         _spriteBatch.End();
         
