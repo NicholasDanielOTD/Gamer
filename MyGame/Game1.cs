@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MyGame.Testing;
 
 namespace MyGame;
 
@@ -9,10 +10,8 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    Entity[] entities = new Entity[16];
-
     Entity selectedEntity = null;
-    World myWorld;
+    World myWorld = null;
 
     public Game1()
     {
@@ -23,19 +22,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-
-        
-        // TODO: Add your initialization logic here
-        myWorld = new World();
-        myWorld.GenerateTileArray();
-
-        Entity ball = new Entity();
-        ball.tile = myWorld.TileArray[0,0];
-        ball.speed = 100f;
-        ball.objectKey = "ball";
-
-        entities[0] = ball;
-
+        (myWorld) = Levels.InitializeMainDebug();
 
         base.Initialize();
     }
@@ -44,16 +31,15 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        foreach (Entity ent in entities)
+        foreach (Entity ent in myWorld.entities)
         {
             if (ent == null) continue;
             ent.texture = Content.Load<Texture2D>(ent.objectKey);
         }
 
-        Texture2D tileTexture = Content.Load<Texture2D>("mytile");
         foreach(Tile tile in myWorld.TileArray)
         {
-            tile.texture = tileTexture;
+            tile.texture = Content.Load<Texture2D>(tile.textureKey);
         }
         
     }
@@ -67,11 +53,11 @@ public class Game1 : Game
 
         if (mstate.LeftButton == ButtonState.Pressed)
         {
-            foreach (Entity ent in entities)
+            bool changedEntity = false;
+            foreach (Entity ent in myWorld.entities)
             {
                 if (ent == null) continue;
-                bool changedEntity = false;
-                if (LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ent)) 
+                if (!changedEntity && LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ent)) 
                 {
                     selectedEntity = ent;
                     changedEntity = true;
@@ -83,14 +69,16 @@ public class Game1 : Game
 
         if (mstate.RightButton == ButtonState.Pressed)
         {
-
-            if (selectedEntity != null && selectedEntity.destination == null && (selectedEntity.tile != myWorld.GetTileAtPoint(mstate.Position)))
+            Tile clickedTile = myWorld.GetTileAtPoint(mstate.Position);
+            if (selectedEntity != null && selectedEntity.destination == null && 
+            (selectedEntity.tile != clickedTile) &&
+            (myWorld.CanEntMoveToTile(selectedEntity, clickedTile)))
             {
-                selectedEntity.destination = myWorld.GetTileAtPoint(mstate.Position);
+                selectedEntity.destination = clickedTile;
             }
         }
         
-        foreach (Entity ent in entities)
+        foreach (Entity ent in myWorld.entities)
         {
             if (ent == null) continue;
             if (ent.destination != null) ent.Move(gameTime.ElapsedGameTime.TotalSeconds);
@@ -114,7 +102,7 @@ public class Game1 : Game
 
         // Draw entities
 
-        foreach (Entity ent in entities)
+        foreach (Entity ent in myWorld.entities)
         {
             if (ent == null) continue;
             if(ent == selectedEntity) {

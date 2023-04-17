@@ -26,6 +26,7 @@ namespace MyGame {
             }
             else
             {
+                tile = destination;
                 destination = null;
             }
         }
