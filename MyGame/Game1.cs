@@ -9,11 +9,10 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    Entity ball;
+    Entity[] entities = new Entity[16];
 
+    Entity selectedEntity = null;
     World myWorld;
-
-    bool ballSelected;
 
     public Game1()
     {
@@ -30,10 +29,12 @@ public class Game1 : Game
         myWorld = new World();
         myWorld.GenerateTileArray();
 
-        ball = new Entity();
+        Entity ball = new Entity();
         ball.tile = myWorld.TileArray[0,0];
         ball.speed = 100f;
-        ballSelected = false;
+        ball.objectKey = "ball";
+
+        entities[0] = ball;
 
 
         base.Initialize();
@@ -43,8 +44,12 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        foreach (Entity ent in entities)
+        {
+            if (ent == null) continue;
+            ent.texture = Content.Load<Texture2D>(ent.objectKey);
+        }
 
-        ball.texture = Content.Load<Texture2D>("ball");
         Texture2D tileTexture = Content.Load<Texture2D>("mytile");
         foreach(Tile tile in myWorld.TileArray)
         {
@@ -62,19 +67,34 @@ public class Game1 : Game
 
         if (mstate.LeftButton == ButtonState.Pressed)
         {
-        if (LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ball)) ballSelected = true;
-        else ballSelected = false;
+            foreach (Entity ent in entities)
+            {
+                if (ent == null) continue;
+                bool changedEntity = false;
+                if (LinearAlgebraHelpers.IsPointInEntity(mstate.Position, ent)) 
+                {
+                    selectedEntity = ent;
+                    changedEntity = true;
+                }
+                else if (!changedEntity) selectedEntity = null;
+            }
+        
         }
 
         if (mstate.RightButton == ButtonState.Pressed)
         {
-            if (ballSelected && (ball.tile != myWorld.GetTileAtPoint(mstate.Position)))
+
+            if (selectedEntity != null && (selectedEntity.tile != myWorld.GetTileAtPoint(mstate.Position)))
             {
-                ball.destination = myWorld.GetTileAtPoint(mstate.Position);
+                selectedEntity.destination = myWorld.GetTileAtPoint(mstate.Position);
             }
         }
         
-        if(ball.destination != null) ball.Move(gameTime.ElapsedGameTime.TotalSeconds);
+        foreach (Entity ent in entities)
+        {
+            if (ent == null) continue;
+            if (selectedEntity?.destination != null) selectedEntity.Move(gameTime.ElapsedGameTime.TotalSeconds);
+        } 
 
         base.Update(gameTime);
     }
@@ -91,9 +111,19 @@ public class Game1 : Game
         {
             _spriteBatch.Draw(tile.texture, tile.pos, Color.White);
         }
-        if(ballSelected) _spriteBatch.Draw(ball.texture, ball.pos, Color.Red);
-        else _spriteBatch.Draw(ball.texture, ball.pos, Color.White);
+
+        // Draw entities
+
+        foreach (Entity ent in entities)
+        {
+            if (ent == null) continue;
+            if(ent == selectedEntity) {
+                _spriteBatch.Draw(ent.texture, color: Color.AntiqueWhite, position: ent.pos);
+            }
+            else _spriteBatch.Draw(ent.texture, ent.pos, Color.White);
+        }
         _spriteBatch.End();
+        
 
         base.Draw(gameTime);
     }

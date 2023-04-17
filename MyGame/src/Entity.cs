@@ -11,6 +11,7 @@ namespace MyGame {
         public Vector2 pos;
         public float speed = 100f;
         public Tile destination;
+        public string objectKey;
 
         public void Move(double elapsedTime)
         {
