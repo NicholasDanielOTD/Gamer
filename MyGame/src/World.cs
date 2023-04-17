@@ -7,7 +7,7 @@ namespace MyGame {
 
         public Tile[,] TileArray = new Tile[16, 16];
 
-        public Tile? GetTileAtPoint(Point point)
+        public Tile GetTileAtPoint(Point point)
         {
             int x = point.X / 64;
             int y = point.Y / 64;
