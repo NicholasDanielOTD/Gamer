@@ -14,6 +14,7 @@ namespace MyGame.Testing {
         ball.speed = 100f;
         ball.objectKey = "ball";
         ball.pos = ball.tile.pos;
+        ball.tile.entityOccupier = ball;
         world.entities[0] = ball;
 
         Entity ball2 = new Entity();
@@ -21,6 +22,7 @@ namespace MyGame.Testing {
         ball2.speed = 100f;
         ball2.objectKey = "ball";
         ball2.pos = ball2.tile.pos;
+        ball2.tile.entityOccupier = ball2;
         world.entities[1] = ball2;
 
         return world;

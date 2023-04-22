@@ -112,5 +112,10 @@ namespace MyGame {
 
             return neighbors;
         }
+
+        public bool CanBeMovedTo()
+        {
+            return (entityOccupier == null);
+        }
     }
 }

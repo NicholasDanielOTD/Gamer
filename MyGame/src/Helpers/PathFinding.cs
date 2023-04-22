@@ -49,7 +49,7 @@ public static class Pathfinding
             Tile[] neighbors = current.GetNeighbors(world);
             foreach (Tile neighbor in neighbors)
             {
-                if (neighbor == null) continue;
+                if (neighbor == null || !neighbor.CanBeMovedTo()) continue;
 
                 double tGscore = gScore[current] + DistanceBetweenTwoTiles(current, neighbor);
                 if (!gScore.ContainsKey(neighbor) || tGscore < gScore[neighbor])
