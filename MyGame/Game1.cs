@@ -41,13 +41,11 @@ public class Game1 : Game
         {
             tile.texture = Content.Load<Texture2D>(tile.textureKey);
         }
-        
+
     }
 
     protected override void Update(GameTime gameTime)
     {
-        //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        //    Exit()
         var kstate = Keyboard.GetState();
         var mstate = Mouse.GetState();
 
@@ -92,6 +90,7 @@ public class Game1 : Game
         Color backgroundColor = Color.Beige;
         GraphicsDevice.Clear(backgroundColor);
 
+        
         // Draw a world of tiles
 
         _spriteBatch.Begin();
@@ -115,6 +114,7 @@ public class Game1 : Game
             _spriteBatch.Draw(ent.texture, ent.pos, Color.White);
         }
         _spriteBatch.End();
+        
         
 
         base.Draw(gameTime);
