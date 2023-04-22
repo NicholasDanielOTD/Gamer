@@ -7,7 +7,6 @@ public class GameMenu {
 
     private bool isOpen = false;
     public Texture2D texture;
-
     public GameMenu()
     {
 
