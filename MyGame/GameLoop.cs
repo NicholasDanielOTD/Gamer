@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MyGame.Menu;
 using MyGame.Testing;
 
 namespace MyGame;
@@ -10,6 +11,7 @@ public partial class Game1 : Game
     private SpriteBatch _spriteBatch;
 
     World myWorld = null;
+    GameMenu myMenu = null;
 
     public Game1()
     {
@@ -21,6 +23,7 @@ public partial class Game1 : Game
     protected override void Initialize()
     {
         (myWorld) = Levels.InitializeMainDebug();
+        myMenu = new GameMenu();
 
         base.Initialize();
     }
@@ -39,12 +42,19 @@ public partial class Game1 : Game
             tile.texture = Content.Load<Texture2D>(tile.textureKey);
         }
 
+        myMenu.texture = new Texture2D(GraphicsDevice, 1024, 1024);
+
     }
 
     protected override void Update(GameTime gameTime)
     {
         CheckInputs(gameTime);
-        MoveEntities(gameTime);
+
+        if (!myMenu.IsOpen())
+        {
+            MoveEntities(gameTime);
+        }
+
         base.Update(gameTime);
     }
 
@@ -68,6 +78,8 @@ public partial class Game1 : Game
             if (ent == myWorld.selectedEntity) DrawHighlightedEntity(ent);
             ent.Draw(_spriteBatch);
         }
+        
+        myMenu.DrawMenu(_spriteBatch);
 
 
         _spriteBatch.End();
