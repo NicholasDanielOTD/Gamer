@@ -12,10 +12,14 @@ namespace MyGame {
         public float speed = 100f;
         public Tile destination;
         public string objectKey;
+        public Pathfinding.Path path;
 
         public void Move(double elapsedTime)
         {
-            if (pos != destination.pos)
+            if ((destination == null) && (path.path.Count > 0)) destination = path.path[0];
+            if (destination == null) return;
+
+            if (pos != destination.pos) // Entity needs to move
             {
                 if (pos.X != destination.pos.X && Math.Abs(pos.X - destination.pos.X) < 4) pos.X = destination.pos.X;
                 else if (pos.Y != destination.pos.Y &&Math.Abs(pos.Y - destination.pos.Y) < 4) pos.Y = destination.pos.Y;
@@ -24,10 +28,12 @@ namespace MyGame {
                 else if (pos.Y > destination.pos.Y) pos.Y -= (float)elapsedTime * speed;
                 else if (pos.Y < destination.pos.Y) pos.Y += (float)elapsedTime * speed;
             }
-            else
+            else // Entity is done moving
             {
                 tile = destination;
                 destination = null;
+                path.path.RemoveAt(0);
+                if (path.path.Count == 0) this.path = null;
             }
         }
 

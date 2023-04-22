@@ -43,7 +43,7 @@ public partial class Game1 : Game
         foreach (Entity ent in myWorld.entities)
         {
             if (ent == null) continue;
-            if (ent.destination != null) ent.Move(gameTime.ElapsedGameTime.TotalSeconds);
+            if (ent.path != null) ent.Move(gameTime.ElapsedGameTime.TotalSeconds);
         } 
     }
 
