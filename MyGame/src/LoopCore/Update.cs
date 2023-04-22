@@ -16,6 +16,7 @@ public partial class Game1 : Game
         if (KeyWasPressed(Keys.Escape, kstate)) myMenu.ToggleOpen();
         if (mstate.LeftButton == ButtonState.Pressed) HandleLeftClick(mstate);
         if (mstate.RightButton == ButtonState.Pressed) HandleRightClick(mstate);
+        HandleHover(mstate);
         lastKstate = kstate;
         lastMstate = mstate;
     }
@@ -51,5 +52,14 @@ public partial class Game1 : Game
     {
         if (kstate.IsKeyUp(key) && this.lastKstate.IsKeyDown(key)) return true;
         return false;
+    }
+
+    protected void HandleHover(MouseState mstate)
+    {
+        (Entity, Tile) tup = myWorld.GetThingAtPoint(mstate.Position);
+        if (tup.Item1 != null) tup.Item1.onHover();
+        else if (tup.Item2 != null) tup.Item2.onHover(myWorld);
+
+        return;
     }
 }

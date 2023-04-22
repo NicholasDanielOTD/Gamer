@@ -13,12 +13,13 @@ namespace MyGame {
         public Tile destination;
         public string objectKey;
         public Pathfinding.Path path;
+        public bool IsMoving = false;
 
         public void Move(double elapsedTime)
         {
-            if ((destination == null) && (path.path.Count > 0)) destination = path.path[0];
-            if (destination == null) return;
-
+            if (IsMoving && (destination == null) && (path.path.Count > 0)) destination = path.path[0];
+            if (destination == null || !IsMoving) return;
+            
             if (pos != destination.pos) // Entity needs to move
             {
                 if (pos.X != destination.pos.X && Math.Abs(pos.X - destination.pos.X) < 4) pos.X = destination.pos.X;
@@ -33,7 +34,7 @@ namespace MyGame {
                 tile = destination;
                 destination = null;
                 path.path.RemoveAt(0);
-                if (path.path.Count == 0) this.path = null;
+                if (path.path.Count == 0) {this.path = null; IsMoving = false;}
             }
         }
 
@@ -48,6 +49,11 @@ namespace MyGame {
         }
 
         public void onRightClick()
+        {
+
+        }
+
+        public void onHover()
         {
 
         }

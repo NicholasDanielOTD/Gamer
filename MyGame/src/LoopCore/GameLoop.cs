@@ -75,7 +75,21 @@ public partial class Game1 : Game
         foreach (Entity ent in myWorld.entities)
         {
             if (ent == null) continue;
-            if (ent == myWorld.selectedEntity) DrawHighlightedEntity(ent);
+            if (ent == myWorld.selectedEntity) {
+                DrawHighlightedEntity(ent);
+                if (ent.path != null)
+                {
+                    foreach (Tile tile in ent.path.path)
+                    {
+                        if (tile == ent.tile) continue;
+                        Texture2D highlight = new Texture2D(GraphicsDevice, 64, 64);
+                        Color[] data = new Color[64*64];
+                        for (int i=0; i < data.Length; i++) data[i] = Color.Aquamarine;
+                        highlight.SetData(data);
+                        _spriteBatch.Draw(highlight, new Vector2((int)tile.pos.X, (int)tile.pos.Y), Color.Aquamarine * .5f);
+                    }
+                }
+                }
             ent.Draw(_spriteBatch);
         }
         

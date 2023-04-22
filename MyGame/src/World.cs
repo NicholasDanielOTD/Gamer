@@ -99,16 +99,21 @@ namespace MyGame {
                 selectedEntity.path = Pathfinding.AStar(selectedEntity.tile, this, myWorld);
                 this.entityOccupier = selectedEntity;
                 selectedEntity.tile.entityOccupier = null;
+                selectedEntity.IsMoving = true;
             }
         }
 
         public Tile[] GetNeighbors(World world)
         {
             Tile[] neighbors = new Tile[4];
-            if ((WorldX + 1)*WorldY < world.TileArray.Length) neighbors[0] = world.TileArray[WorldX+1,WorldY]; 
-            if ((WorldX - 1)*WorldY > 0) neighbors[1] = world.TileArray[WorldX-1,WorldY]; 
-            if ((WorldY + 1)*WorldX < world.TileArray.Length) neighbors[2] = world.TileArray[WorldX,WorldY+1]; 
-            if ((WorldY - 1)*WorldX > 0) neighbors[3] = world.TileArray[WorldX,WorldY-1]; 
+            int upperYBound = 15;
+            int lowerYBound = 0;
+            int upperXBound = 15;
+            int lowerXBound = 0;
+            if (!(WorldX+1 > upperXBound)) neighbors[0] = world.TileArray[WorldX+1,WorldY]; 
+            if (!(WorldY+1 > upperYBound)) neighbors[1] = world.TileArray[WorldX,WorldY+1]; 
+            if (!(WorldX-1 < lowerXBound)) neighbors[2] = world.TileArray[WorldX-1,WorldY]; 
+            if (!(WorldY-1 < lowerYBound)) neighbors[3] = world.TileArray[WorldX,WorldY-1]; 
 
             return neighbors;
         }
@@ -116,6 +121,14 @@ namespace MyGame {
         public bool CanBeMovedTo()
         {
             return (entityOccupier == null);
+        }
+
+        public void onHover(World world)
+        {
+            if ((world.selectedEntity != null) && ((world.selectedEntity.path == null) || (!world.selectedEntity.IsMoving && (world.selectedEntity.path.goal != this))))
+            {
+                world.selectedEntity.path = Pathfinding.AStar(world.selectedEntity.tile, this, world);
+            }
         }
     }
 }

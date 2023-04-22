@@ -7,6 +7,7 @@ public static class Pathfinding
 
     public class Path {
         public List<Tile> path = new List<Tile>();
+        public Tile goal;
     }
 
     public static double DistanceBetweenTwoTiles(Tile a, Tile b)
@@ -19,6 +20,7 @@ public static class Pathfinding
     private static Path Reconstruct(Dictionary<Tile, Tile> cameFrom, Tile current)
     {
         Path totalPath = new Path();
+        totalPath.goal = current;
         totalPath.path.Add(current);
         while(cameFrom.ContainsKey(current))
         {
