@@ -30,5 +30,20 @@ namespace MyGame {
                 destination = null;
             }
         }
+
+        public void Draw(SpriteBatch _spriteBatch)
+        {
+            _spriteBatch.Draw(this.texture, this.pos, Color.White);
+        }
+
+        public void onLeftClick(World myWorld)
+        {
+            myWorld.selectedEntity = this;
+        }
+
+        public void onRightClick()
+        {
+
+        }
     }
 }

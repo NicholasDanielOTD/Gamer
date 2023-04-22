@@ -7,6 +7,7 @@ namespace MyGame {
 
         public Tile[,] TileArray = new Tile[16, 16];
         public Entity[] entities = new Entity[16];
+        public Entity selectedEntity = null;
 
         public Tile GetTileAtPoint(Point point)
         {
@@ -43,8 +44,18 @@ namespace MyGame {
         public bool CanEntMoveToTile(Entity ent, Tile tile)
         {
             if(GetEntityAtTile(tile) != null) return false;
-
+            if(tile.entityOccupier != null) return false;
             return true;
+        }
+
+        public (Entity ent, Tile tile) GetThingAtPoint(Point pos)
+        {
+            foreach (Entity ent in this.entities)
+            {
+                if (ent == null) continue;
+                if (LinearAlgebraHelpers.IsPointInEntity(pos, ent)) return (ent, ent.tile);
+            }
+            return (null, GetTileAtPoint(pos));
         }
 
     }
@@ -56,14 +67,34 @@ namespace MyGame {
         public int height = 64;
         public Texture2D texture;
         public string textureKey = "mytile";
+        public Entity entityOccupier = null;
 
         public bool ShouldDraw()
         {
             return true;
         }
 
+        public void Draw(SpriteBatch _spriteBatch)
+        {
+            _spriteBatch.Draw(this.texture, this.pos, Color.White);
+        }
 
+        public void onLeftClick(World myWorld)
+        {
+            myWorld.selectedEntity = null;
+        }
 
+        public void onRightClick(World myWorld)
+        {
+            Entity selectedEntity = myWorld.selectedEntity;
+            if (selectedEntity != null && selectedEntity.destination == null && 
+            (selectedEntity.tile != this) &&
+            (myWorld.CanEntMoveToTile(selectedEntity, this)))
+            {
+                selectedEntity.destination = this;
+                this.entityOccupier = selectedEntity;
+                selectedEntity.tile.entityOccupier = null;
+            }
+        }
     }
-
 }
