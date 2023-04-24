@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace MyGame {
 
@@ -8,6 +9,8 @@ namespace MyGame {
         public Tile[,] TileArray = new Tile[16, 16];
         public Entity[] entities = new Entity[16];
         public Entity selectedEntity = null;
+        public int xbound = 0;
+        public int ybound = 0;
 
         public Tile GetTileAtPoint(Point point)
         {
@@ -20,9 +23,9 @@ namespace MyGame {
 
         public void GenerateTileArray()
         {
-            for(int x = 0; x < 16; x++)
+            for(int x = 0; x < xbound; x++)
             {
-                for (int y = 0; y < 16; y++)
+                for (int y = 0; y < ybound; y++)
                 {
                     Tile newTile = new Tile();
                     newTile.pos = new Vector2(x*64,y*64);
@@ -38,7 +41,7 @@ namespace MyGame {
             foreach (Entity ent in entities)
             {
                 if (ent == null) continue;
-                if (ent.tile == tile) return ent;
+                if (ent.GetTile() == tile) return ent;
             }
 
             return null;
@@ -46,9 +49,7 @@ namespace MyGame {
 
         public bool CanEntMoveToTile(Entity ent, Tile tile)
         {
-            if(GetEntityAtTile(tile) != null) return false;
-            if(tile.entityOccupier != null) return false;
-            return true;
+            return tile.CanBeMovedTo();
         }
 
         public (Entity ent, Tile tile) GetThingAtPoint(Point pos)
@@ -56,7 +57,7 @@ namespace MyGame {
             foreach (Entity ent in this.entities)
             {
                 if (ent == null) continue;
-                if (LinearAlgebraHelpers.IsPointInEntity(pos, ent)) return (ent, ent.tile);
+                if (LinearAlgebraHelpers.IsPointInEntity(pos, ent)) return (ent, ent.GetTile());
             }
             return (null, GetTileAtPoint(pos));
         }
@@ -69,10 +70,10 @@ namespace MyGame {
         public int width = 64;
         public int height = 64;
         public Texture2D texture;
-        public string textureKey = "mytile";
-        public Entity entityOccupier = null;
+        public string TextureKey = "mytile";
         public int WorldX;
         public int WorldY;
+        private Entity occupyingEntity;
 
         public bool ShouldDraw()
         {
@@ -92,13 +93,14 @@ namespace MyGame {
         public void onRightClick(World myWorld)
         {
             Entity selectedEntity = myWorld.selectedEntity;
-            if (selectedEntity != null && selectedEntity.destination == null && 
-            (selectedEntity.tile != this) &&
-            (myWorld.CanEntMoveToTile(selectedEntity, this)))
+            Tile selEntTile = selectedEntity.GetTile();
+            if (selectedEntity != null && 
+                (!selectedEntity.IsMoving) &&
+                (selectedEntity.destination == null) && 
+                (selEntTile != this) &&
+                (myWorld.CanEntMoveToTile(selectedEntity, this)))
             {
-                selectedEntity.path = Pathfinding.AStar(selectedEntity.tile, this, myWorld);
-                this.entityOccupier = selectedEntity;
-                selectedEntity.tile.entityOccupier = null;
+                selectedEntity.path = Pathfinding.AStar(selEntTile, this, myWorld);
                 selectedEntity.IsMoving = true;
             }
         }
@@ -106,9 +108,9 @@ namespace MyGame {
         public Tile[] GetNeighbors(World world)
         {
             Tile[] neighbors = new Tile[4];
-            int upperYBound = 15;
+            int upperYBound = world.ybound;
             int lowerYBound = 0;
-            int upperXBound = 15;
+            int upperXBound = world.xbound;
             int lowerXBound = 0;
             if (!(WorldX+1 > upperXBound)) neighbors[0] = world.TileArray[WorldX+1,WorldY]; 
             if (!(WorldY+1 > upperYBound)) neighbors[1] = world.TileArray[WorldX,WorldY+1]; 
@@ -120,15 +122,23 @@ namespace MyGame {
 
         public bool CanBeMovedTo()
         {
-            return (entityOccupier == null);
+            return (this.occupyingEntity == null);
         }
 
         public void onHover(World world)
         {
             if ((world.selectedEntity != null) && ((world.selectedEntity.path == null) || (!world.selectedEntity.IsMoving && (world.selectedEntity.path.goal != this))))
             {
-                world.selectedEntity.path = Pathfinding.AStar(world.selectedEntity.tile, this, world);
+                world.selectedEntity.path = Pathfinding.AStar(world.selectedEntity.GetTile(), this, world);
             }
+        }
+
+        public bool UpdateEntity(Entity ent)
+        {
+            if (ent == null) this.occupyingEntity = null;
+            else if (this.occupyingEntity != null) return false;
+            else this.occupyingEntity = ent;
+            return true;
         }
     }
 }

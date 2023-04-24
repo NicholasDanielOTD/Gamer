@@ -7,13 +7,24 @@ namespace MyGame {
 
         public Texture2D defaultTexture;
         public Texture2D texture;
-        public Tile tile;
         public Vector2 pos;
         public float speed = 100f;
         public Tile destination;
         public string objectKey;
         public Pathfinding.Path path;
         public bool IsMoving = false;
+        private Tile tile;
+
+        public void SetTile(Tile tile)
+        {
+            if (tile.UpdateEntity(this)) this.tile = tile;
+            return;
+        }
+
+        public Tile GetTile()
+        {
+            return this.tile;
+        }
 
         public void Move(double elapsedTime)
         {

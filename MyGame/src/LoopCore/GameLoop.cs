@@ -39,7 +39,7 @@ public partial class Game1 : Game
         }
         foreach (Tile tile in myWorld.TileArray)
         {
-            tile.texture = Content.Load<Texture2D>(tile.textureKey);
+            tile.texture = Content.Load<Texture2D>(tile.TextureKey);
         }
 
         myMenu.texture = new Texture2D(GraphicsDevice, 1024, 1024);
@@ -81,7 +81,7 @@ public partial class Game1 : Game
                 {
                     foreach (Tile tile in ent.path.path)
                     {
-                        if (tile == ent.tile) continue;
+                        if (tile == ent.GetTile()) continue;
                         Texture2D highlight = new Texture2D(GraphicsDevice, 64, 64);
                         Color[] data = new Color[64*64];
                         for (int i=0; i < data.Length; i++) data[i] = Color.Aquamarine;
