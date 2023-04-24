@@ -53,12 +53,10 @@ public static class Pathfinding
             {
                 if (neighbor == null || !neighbor.CanBeMovedTo()) continue;
 
-                double tGscore = gScore[current] + DistanceBetweenTwoTiles(current, neighbor);
-                if (!gScore.ContainsKey(neighbor) || tGscore < gScore[neighbor])
+                if (!fScore.ContainsKey(neighbor))
                 {
                     cameFrom[neighbor] = current;
-                    gScore[neighbor] = tGscore;
-                    fScore[neighbor] = tGscore + DistanceBetweenTwoTiles(neighbor, goal);
+                    fScore[neighbor] = fScore[current] + 1 + DistanceBetweenTwoTiles(neighbor, goal);
                     if (!openSet.path.Contains(neighbor)) openSet.path.Add(neighbor);
                 }
             }

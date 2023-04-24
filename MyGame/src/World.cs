@@ -93,6 +93,7 @@ namespace MyGame {
         public void onRightClick(World myWorld)
         {
             Entity selectedEntity = myWorld.selectedEntity;
+            if (selectedEntity == null) return;
             Tile selEntTile = selectedEntity.GetTile();
             if (selectedEntity != null && 
                 (!selectedEntity.IsMoving) &&
@@ -112,8 +113,8 @@ namespace MyGame {
             int lowerYBound = 0;
             int upperXBound = world.xbound;
             int lowerXBound = 0;
-            if (!(WorldX+1 > upperXBound)) neighbors[0] = world.TileArray[WorldX+1,WorldY]; 
-            if (!(WorldY+1 > upperYBound)) neighbors[1] = world.TileArray[WorldX,WorldY+1]; 
+            if (!(WorldX+1 >= upperXBound)) neighbors[0] = world.TileArray[WorldX+1,WorldY]; 
+            if (!(WorldY+1 >= upperYBound)) neighbors[1] = world.TileArray[WorldX,WorldY+1]; 
             if (!(WorldX-1 < lowerXBound)) neighbors[2] = world.TileArray[WorldX-1,WorldY]; 
             if (!(WorldY-1 < lowerYBound)) neighbors[3] = world.TileArray[WorldX,WorldY-1]; 
 
