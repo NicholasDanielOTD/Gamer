@@ -102,6 +102,7 @@ namespace MyGame {
                 (myWorld.CanEntMoveToTile(selectedEntity, this)))
             {
                 selectedEntity.path = Pathfinding.AStar(selEntTile, this, myWorld);
+                selectedEntity.SetTile(this);
                 selectedEntity.IsMoving = true;
             }
         }
