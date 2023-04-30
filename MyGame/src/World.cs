@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 namespace MyGame {
 
@@ -62,18 +64,32 @@ namespace MyGame {
             return (null, GetTileAtPoint(pos));
         }
 
+        public void ClickClickablesAtPoint(Point pos, MouseState mstate, KeyboardState kstate)
+        {
+            var (ent, tile) = GetThingAtPoint(pos);
+            if (ent!=null) foreach(Action<World,MouseState,KeyboardState> onClick in ent.onClick) onClick(this, mstate, kstate);
+            else if (tile!=null) foreach(Action<World,MouseState,KeyboardState> onClick in tile.onClick) onClick(this, mstate, kstate);
+            
+        }
+
     }
 
-    public class Tile {
+    public class Tile : IClickable {
 
-        public Vector2 pos;
+        public Vector2 pos {get; set;}
         public int width = 64;
         public int height = 64;
-        public Texture2D texture;
+        public Texture2D texture {get; set;}
         public string TextureKey = "mytile";
         public int WorldX;
         public int WorldY;
         private Entity occupyingEntity;
+        public Action<World, MouseState, KeyboardState>[] onClick {get; set;}
+
+        public Tile()
+        {
+            this.onClick = new Action<World, MouseState, KeyboardState>[] {onLeftClick, onRightClick};
+        }
 
         public bool ShouldDraw()
         {
@@ -85,13 +101,14 @@ namespace MyGame {
             _spriteBatch.Draw(this.texture, this.pos, Color.White);
         }
 
-        public void onLeftClick(World myWorld)
+        public void onLeftClick(World myWorld, MouseState mstate, KeyboardState kstate)
         {
-            myWorld.selectedEntity = null;
+            if(mstate.LeftButton == ButtonState.Pressed) myWorld.selectedEntity = null;
         }
 
-        public void onRightClick(World myWorld)
+        public void onRightClick(World myWorld, MouseState mstate, KeyboardState kstate)
         {
+            if(mstate.RightButton != ButtonState.Pressed) return;
             Entity selectedEntity = myWorld.selectedEntity;
             if (selectedEntity == null) return;
             Tile selEntTile = selectedEntity.GetTile();
@@ -104,7 +121,7 @@ namespace MyGame {
                 selectedEntity.path = Pathfinding.AStar(selEntTile, this, myWorld);
                 selectedEntity.SetTile(this);
                 selectedEntity.IsMoving = true;
-            }
+            } 
         }
 
         public Tile[] GetNeighbors(World world)

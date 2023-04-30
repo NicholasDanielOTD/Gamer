@@ -14,29 +14,10 @@ public partial class Game1 : Game
         var mstate = Mouse.GetState();
 
         if (KeyWasPressed(Keys.Escape, kstate)) myMenu.ToggleOpen();
-        if (mstate.LeftButton == ButtonState.Pressed) HandleLeftClick(mstate);
-        if (mstate.RightButton == ButtonState.Pressed) HandleRightClick(mstate);
+        if (mstate.LeftButton == ButtonState.Pressed || mstate.RightButton == ButtonState.Pressed) myWorld.ClickClickablesAtPoint(mstate.Position, mstate, kstate);
         HandleHover(mstate);
         lastKstate = kstate;
         lastMstate = mstate;
-    }
-
-    protected void HandleLeftClick(MouseState mstate)
-    {
-        if (!this.myMenu.IsOpen())
-        {
-            (Entity, Tile) tup = myWorld.GetThingAtPoint(mstate.Position);
-            if (tup.Item1 != null) tup.Item1.onLeftClick(myWorld);
-            else if (tup.Item2 != null) tup.Item2.onLeftClick(myWorld);
-        }
-        
-    }
-
-    protected void HandleRightClick(MouseState mstate)
-    {
-        (Entity, Tile) tup = myWorld.GetThingAtPoint(mstate.Position);
-        if (tup.Item1 != null) tup.Item1.onRightClick();
-        else if (tup.Item2 != null) tup.Item2.onRightClick(myWorld);
     }
 
     protected void MoveEntities(GameTime gameTime)

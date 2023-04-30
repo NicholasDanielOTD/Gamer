@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Microsoft.Xna.Framework.Input;
 
 namespace MyGame {
     public class Entity : IClickable {
@@ -14,6 +15,12 @@ namespace MyGame {
         public Pathfinding.Path path {get; set;}
         public bool IsMoving = false;
         private Tile tile  {get; set;}
+        public Action<World, MouseState, KeyboardState>[] onClick {get; set;}
+
+        public Entity()
+        {
+            this.onClick = new Action<World,MouseState,KeyboardState>[] {onLeftClick};
+        }
 
         public void SetTile(Tile tile)
         {
@@ -58,9 +65,9 @@ namespace MyGame {
             _spriteBatch.Draw(this.texture, this.pos, Color.White);
         }
 
-        public void onLeftClick(World myWorld)
+        public void onLeftClick(World myWorld, MouseState mstate, KeyboardState kstate)
         {
-            myWorld.selectedEntity = this;
+            if(mstate.LeftButton == ButtonState.Pressed) myWorld.selectedEntity = this;
         }
 
         public void onRightClick()
