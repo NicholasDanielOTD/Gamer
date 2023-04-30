@@ -59,12 +59,12 @@ namespace MyGame {
             foreach (Entity ent in this.entities)
             {
                 if (ent == null) continue;
-                if (LinearAlgebraHelpers.IsPointInEntity(pos, ent)) return (ent, ent.GetTile());
+                if (LinearAlgebraHelpers.IsPointInClickable(pos, ent)) return (ent, ent.GetTile());
             }
             return (null, GetTileAtPoint(pos));
         }
 
-        public void ClickClickablesAtPoint(Point pos, MouseState mstate, KeyboardState kstate)
+        public virtual void ClickClickablesAtPoint(Point pos, MouseState mstate, KeyboardState kstate)
         {
             var (ent, tile) = GetThingAtPoint(pos);
             if (ent!=null) foreach(Action<World,MouseState,KeyboardState> onClick in ent.onClick) onClick(this, mstate, kstate);

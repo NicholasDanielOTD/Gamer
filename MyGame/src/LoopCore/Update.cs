@@ -14,7 +14,8 @@ public partial class Game1 : Game
         var mstate = Mouse.GetState();
 
         if (KeyWasPressed(Keys.Escape, kstate)) myMenu.ToggleOpen();
-        if (mstate.LeftButton == ButtonState.Pressed || mstate.RightButton == ButtonState.Pressed) myWorld.ClickClickablesAtPoint(mstate.Position, mstate, kstate);
+        else if (myMenu.IsOpen() && (mstate.LeftButton == ButtonState.Pressed || mstate.RightButton == ButtonState.Pressed)) myMenu.ClickClickablesAtPoint(mstate.Position, mstate, kstate); 
+        else if (mstate.LeftButton == ButtonState.Pressed || mstate.RightButton == ButtonState.Pressed) myWorld.ClickClickablesAtPoint(mstate.Position, mstate, kstate);
         HandleHover(mstate);
         lastKstate = kstate;
         lastMstate = mstate;

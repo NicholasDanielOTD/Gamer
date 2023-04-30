@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MyGame {
     public class LinearAlgebraHelpers 
     {
-        static public bool IsPointInEntity(Point point, Entity entity)
+        static public bool IsPointInClickable(Point point, IClickable clickable)
         {
-            bool xIn = ((point.X >= entity.pos.X) && (point.X <= (entity.pos.X + entity.texture.Width)));
-            bool yIn = ((point.Y >= entity.pos.Y) && (point.Y <= (entity.pos.Y + entity.texture.Height)));
+            if (clickable == null || clickable.pos == null || clickable.texture == null) return false;
+            bool xIn = ((point.X >= clickable.pos.X) && (point.X <= (clickable.pos.X + clickable.texture.Width)));
+            bool yIn = ((point.Y >= clickable.pos.Y) && (point.Y <= (clickable.pos.Y + clickable.texture.Height)));
 
             return xIn && yIn;
         }

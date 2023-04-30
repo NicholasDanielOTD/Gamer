@@ -1,11 +1,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
 namespace MyGame.Menu;
 
-public class GameMenu {
+public class GameMenu : World {
 
     private bool isOpen = false;
     public Texture2D texture;
@@ -15,8 +16,14 @@ public class GameMenu {
 
     }
 
-    public void AddOption(Option[] options)
+    public override void ClickClickablesAtPoint(Point pos, MouseState mstate, KeyboardState kstate)
     {
+        foreach (Option opt in options) if (LinearAlgebraHelpers.IsPointInClickable(pos, opt)) foreach (Action<World, MouseState, KeyboardState> onClick in opt.onClick) onClick(this, mstate, kstate);
+        
+    }
+    public void AddOption(params Option[] options)
+    {
+        this.options = new List<Option>();
         this.options.AddRange(options);
     }
     public void ToggleOpen()
@@ -39,29 +46,30 @@ public class GameMenu {
 
         foreach(Option opt in options)
         {
-
+            opt.Draw(_spriteBatch, new Vector2(100,100));
         }
     }
 
 }
 
-public class Option {
+public class Option : IClickable {
     
-    private Action _onClick;
-    private Texture2D texture;
-    
-    public Option(Action onClick)
-    {
-        _onClick = onClick;
-    }
+    public Texture2D texture {get; set;}
+    public Vector2 pos {get; set;}
+    public Action<World, MouseState, KeyboardState>[] onClick {get; set;}
 
-    public void SetClick(Action onClick)
+    public Option(Texture2D texture, Action<World, MouseState, KeyboardState> action)
     {
-        _onClick = onClick;
+        this.texture = texture;
+        Color[] data = new Color[64*64];
+        for (int i=0; i < data.Length; i++) data[i] = Color.White;
+        this.texture.SetData(data);
+        this.onClick = new Action<World, MouseState, KeyboardState>[] {action};
     }
 
     public void Draw(SpriteBatch _spriteBatch, Vector2 loc)
     {
+        this.pos = loc;
         _spriteBatch.Draw(this.texture, loc, Color.Black * .5f);
     }
 

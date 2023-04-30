@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MyGame.Menu;
 using MyGame.Testing;
+using System;
 
 namespace MyGame;
 
@@ -24,6 +26,11 @@ public partial class Game1 : Game
     {
         (myWorld) = Levels.InitializeMainDebug();
         myMenu = new GameMenu();
+        Option myOpt= new Option(new Texture2D(GraphicsDevice, 64, 64), new Action<World, MouseState, KeyboardState>((World menu, MouseState mstate, KeyboardState kstate)=>{
+            (myWorld) = Levels.InitializeMainDebug();
+            this.LoadContent();
+            }));
+        myMenu.AddOption(myOpt);
 
         base.Initialize();
     }
